@@ -32,7 +32,7 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
       Ok(
         Json.obj(
           fields = "responseCommon" -> responseCommon,
-          "responseDetail" -> responseDetail
+          "responseDetail" -> responseDetail(EORI)
         )
       )
     )
@@ -47,8 +47,8 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
     )
   )
 
-  private final val responseDetail = Json.obj(
-    fields = "EORINo" -> "GB987654321000",
+  private final def responseDetail(EORI: String) = Json.obj(
+    fields = "EORINo" -> EORI,
     "CDSFullName" -> "Fast Food ltd",
     "CDSEstablishmentAddress" -> Json.obj(
       "streetAndNumber" -> "99 Avenue Road",
