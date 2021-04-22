@@ -1,3 +1,4 @@
 GET         /subscriptions/subscriptiondisplay/v1        controllers.EoriDetailsController.onLoad(regime: String, acknowledgementReference: String, EORI: String)
 POST        /cpr/caserequest/c18/create/v1               controllers.CreateCaseController.createCase()
+POST        /api/v2/init                                 controllers.AddressLookUpController.initialise()
 GET         /api/confirmed                               controllers.AddressLookUpController.getAddress(id: Option[String] ?= None)

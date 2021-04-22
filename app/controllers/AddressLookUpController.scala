@@ -26,6 +26,10 @@ import scala.concurrent.Future
 class AddressLookUpController @Inject()(cc: ControllerComponents)
   extends BackendController(cc) {
 
+  def initialise() : Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Accepted.withHeaders(("Location", "something")))
+  }
+
   def getAddress(id: Option[String]): Action[AnyContent] = Action.async { implicit request =>
 
     val successBody =
