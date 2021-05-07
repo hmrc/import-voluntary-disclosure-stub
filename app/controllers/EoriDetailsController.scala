@@ -29,12 +29,12 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
 
   def onLoad(regime: String, acknowledgementReference: String, EORI: String): Action[AnyContent] = Action.async { implicit request =>
     EORI match {
-      case eori if EORI == "ER200000000001" =>
+      case eori if EORI == "GB200000000001" =>
         Future.successful(Ok(Json.obj(
           "subscriptionDisplayResponse" -> Json.obj(
              "responseCommon" -> responseCommonError
           ))))
-      case eori if EORI == "ER404000000001" =>
+      case eori if EORI == "GB404000000001" =>
         Future.successful(NotFound("taxPayerID or EORI exists but no detail returned"))
       case _ =>
         Future.successful(Ok(Json.obj(
