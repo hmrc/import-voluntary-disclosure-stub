@@ -28,14 +28,21 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
   extends BackendController(cc) {
 
   def onLoad(regime: String, acknowledgementReference: String, EORI: String): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(
-      Ok(
-        Json.obj(
-          fields = "responseCommon" -> responseCommon,
-          "responseDetail" -> responseDetail(EORI)
-        )
-      )
-    )
+    EORI match {
+      case eori if EORI == "ER200000000001" =>
+        Future.successful(Ok(Json.obj(
+          "subscriptionDisplayResponse" -> Json.obj(
+             "responseCommon" -> responseCommonError
+          ))))
+      case eori if EORI == "ER404000000001" =>
+        Future.successful(NotFound("taxPayerID or EORI exists but no detail returned"))
+      case _ =>
+        Future.successful(Ok(Json.obj(
+          "subscriptionDisplayResponse" -> Json.obj(
+            "responseCommon" -> responseCommon,
+            "responseDetail" -> responseDetail(EORI)
+        ))))
+    }
   }
 
   private final val responseCommon = Json.obj(
@@ -55,6 +62,15 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
       "city" -> "Anyold Town",
       "postalCode" -> "99JZ 1AA",
       "countryCode" -> "GB"
+    )
+  )
+
+  private final val responseCommonError = Json.obj(
+    fields = "status" -> "OK",
+    "statusText" -> "037 - Mandatory parameters missing or invalid",
+    "processingDate" -> "2021-03-1T19:33:47Z",
+    "returnParameters" -> Json.arr(
+      Json.obj("paramName" -> "POSITION", "paramValue" -> "FAIL")
     )
   )
 
