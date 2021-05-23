@@ -61,7 +61,11 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
       "streetAndNumber" -> "99 Avenue Road",
       "city" -> "Anyold Town",
       "postalCode" -> "99JZ 1AA",
-      "countryCode" -> "GB"
+      "countryCode" -> "GB",
+      "VATIDs" -> Json.arr(
+        "countryCode" -> "GB",
+        "VATID" -> EORI
+      )
     )
   )
 
