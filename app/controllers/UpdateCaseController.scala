@@ -49,7 +49,7 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
 
     val result = for {
       _ <- Either.cond(missingHeaders.isEmpty, (), Json.obj("missing-headers" -> missingHeaders.toList))
-      caseId <- (request.body \ "CaseID").validate[String].asEither.left.map(err => Json.obj("errors" -> err.toString()))
+      caseId <- (request.body \ "Content" \ "CaseID").validate[String].asEither.left.map(err => Json.obj("errors" -> err.toString()))
     } yield caseId
 
     val resp = result match {

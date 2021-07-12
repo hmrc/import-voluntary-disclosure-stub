@@ -45,7 +45,7 @@ class UpdateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
       "content-type" -> ContentTypes.JSON,
       "accept" -> ContentTypes.JSON,
       "authorization" -> s"Bearer some-really-long-token"
-    ).withBody(Json.obj("CaseID" -> caseId))
+    ).withBody(Json.obj("Content" -> Json.obj("CaseID" -> caseId)))
 
     "return 200" in {
       val result = controller.updateCase()(validRequest)
