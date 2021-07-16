@@ -20,7 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.{ContentTypes, Status}
-import play.api.libs.json.{JsDefined, Json}
+import play.api.libs.json.{JsDefined, JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -34,11 +34,11 @@ class UpdateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
   private val httpDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH).withZone(ZoneId.of("GMT"))
   private val request = FakeRequest(controllers.routes.UpdateCaseController.updateCase()).withBody(Json.obj())
   private val controller = new UpdateCaseController(stubControllerComponents())
-  private val caseId = "C18"
 
-  "Calling updateCase with a valid request" should {
+  trait Test {
+    def caseId: String = "C18"
 
-    val validRequest = request.withHeaders(
+    def validRequest: FakeRequest[JsObject] = request.withHeaders(
       "customprocesseshost" -> "Digital",
       "x-correlation-id" -> UUID.randomUUID().toString,
       "date" -> LocalDateTime.now().format(httpDateFormatter),
@@ -46,21 +46,36 @@ class UpdateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
       "accept" -> ContentTypes.JSON,
       "authorization" -> s"Bearer some-really-long-token"
     ).withBody(Json.obj("Content" -> Json.obj("CaseID" -> caseId)))
+  }
 
-    "return 200" in {
-      val result = controller.updateCase()(validRequest)
+  "Calling updateCase with a valid request" should {
+
+    "return 200" in new Test {
+      private val result = controller.updateCase()(validRequest)
       status(result) shouldBe Status.OK
     }
 
-    "return a JSON payload" in {
-      val result = controller.updateCase()(validRequest)
+    "return a JSON payload" in new Test {
+      private val result = controller.updateCase()(validRequest)
       contentType(result) shouldBe Some(ContentTypes.JSON)
       contentAsJson(result) \ "CaseID" shouldBe JsDefined(Json.toJson(caseId))
     }
 
-    "return a correlation ID in the headers" in {
-      val result: Result = await(controller.updateCase()(validRequest))
+    "return a correlation ID in the headers" in new Test {
+      private val result: Result = await(controller.updateCase()(validRequest))
       result.header.headers.keys should contain("x-correlation-id")
+    }
+
+    "return 400 for a case that doesn't exist" in new Test {
+      override val caseId: String = controller.InvalidCaseId
+      private val result = controller.updateCase()(validRequest)
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "return 400 for a case that's closed" in new Test {
+      override val caseId: String = controller.ClosedCaseId
+      private val result = controller.updateCase()(validRequest)
+      status(result) shouldBe Status.BAD_REQUEST
     }
   }
 

@@ -30,6 +30,9 @@ import scala.concurrent.Future
 class UpdateCaseController @Inject()(cc: ControllerComponents)
   extends BackendController(cc) with Logging {
 
+  private[controllers] val InvalidCaseId = "C189999999999999999999"
+  private[controllers] val ClosedCaseId = "C188888888888888888888"
+
   def updateCase(): Action[JsValue] = Action(parse.json).async { request =>
 
     val requiredHeaders = Set(
@@ -41,8 +44,9 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
       "authorization"
     )
 
+    val correlationId = request.headers.get("x-correlation-id").getOrElse(UUID.randomUUID().toString)
     val responseHeaders = Seq(
-      "x-correlation-id" -> request.headers.get("x-correlation-id").getOrElse(UUID.randomUUID().toString)
+      "x-correlation-id" -> correlationId
     )
 
     val missingHeaders = requiredHeaders.diff(request.headers.keys.map(_.toLowerCase))
@@ -53,6 +57,14 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
     } yield caseId
 
     val resp = result match {
+      case Right(`InvalidCaseId`) =>
+        val error = Json.obj("correlationId" -> correlationId, "errorCode" -> "400", "errorMessage" -> "03- Invalid Case ID")
+        BadRequest(Json.obj("errorDetail" -> error))
+
+      case Right(`ClosedCaseId`) =>
+        val error = Json.obj("correlationId" -> correlationId, "errorCode" -> "400", "errorMessage" -> "04 - Requested case already closed")
+        BadRequest(Json.obj("errorDetail" -> error))
+
       case Right(caseId) =>
         val successBody = Json.obj(
           "CaseID" -> caseId,
@@ -62,6 +74,7 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
         )
 
         Ok(successBody)
+
       case Left(error) =>
         logger.info(s"headers: ${request.headers.keys}")
         // the error body is not representative of the real backend, details are for debugging purposes ONLY
