@@ -58,11 +58,11 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
 
     val resp = result match {
       case Right(`InvalidCaseId`) =>
-        val error = Json.obj("correlationId" -> correlationId, "errorCode" -> "400", "errorMessage" -> "03- Invalid Case ID")
+        val error = Json.obj("correlationId" -> correlationId, "errorMessage" -> "9xx : 03- Invalid Case ID")
         BadRequest(Json.obj("errorDetail" -> error))
 
       case Right(`ClosedCaseId`) =>
-        val error = Json.obj("correlationId" -> correlationId, "errorCode" -> "400", "errorMessage" -> "04 - Requested case already closed")
+        val error = Json.obj("correlationId" -> correlationId, "errorMessage" -> "9xx : 04 - Requested case already closed")
         BadRequest(Json.obj("errorDetail" -> error))
 
       case Right(caseId) =>
