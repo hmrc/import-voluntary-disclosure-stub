@@ -1,4 +1,30 @@
 
 # import-voluntary-disclosure-stub
 
-See Wiki page https://github.com/hmrc/import-voluntary-disclosure-stub/wiki
+## Purpose
+This stub is for local development and staging support. It provides endpoints to stub out the off platform calls that the service makes.
+
+## Running the service
+### Service manager
+`sm --start IMPORT_VOLUNTARY_DISCLOSURE_STUB -r`
+### Locally
+`sbt run` or `sbt 'run 7952'`
+
+## Endpoints
+The following endpoints are implemented:
+
+
+* **GET         /subscriptions/subscriptiondisplay/v1**        
+  MDG SUB09 endpoint for retrieving Known EORI Details
+
+* **POST        /cpr/caserequest/c18/create/v1**              
+  EIS endpoint for creating a new submission
+
+* **POST        /cpr/caserequest/c18/update/v1**              
+  EIS endpoint for updating an existing submission
+
+* **POST        /api/v2/init**              
+  Address Lookup Frontend endpoint to initiate the journey
+
+* **GET         /api/confirmed**              
+  Address Lookup Frontend endpoint to retrieve and address
