@@ -3,13 +3,13 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "import-voluntary-disclosure-stub"
 
-val silencerVersion = "1.7.5"
+val silencerVersion = "1.7.9"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
     majorVersion := 0,
-    scalaVersion := "2.12.14",
+    scalaVersion := "2.12.16",
     PlayKeys.playDefaultPort := 7952,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     // ***************
@@ -31,11 +31,11 @@ lazy val microservice = Project(appName, file("."))
 val codeStyleIntegrationTest = taskKey[Unit]("enforce code style then integration test")
 Project.inConfig(IntegrationTest)(ScalastylePlugin.rawScalastyleSettings()) ++
   Seq(
-    scalastyleConfig in IntegrationTest := (scalastyleConfig in scalastyle).value,
-    scalastyleTarget in IntegrationTest := target.value / "scalastyle-it-results.xml",
-    scalastyleFailOnError in IntegrationTest := (scalastyleFailOnError in scalastyle).value,
-    (scalastyleFailOnWarning in IntegrationTest) := (scalastyleFailOnWarning in scalastyle).value,
-    scalastyleSources in IntegrationTest := (unmanagedSourceDirectories in IntegrationTest).value,
-    codeStyleIntegrationTest := scalastyle.in(IntegrationTest).toTask("").value,
-    (test in IntegrationTest) := ((test in IntegrationTest) dependsOn codeStyleIntegrationTest).value
+    IntegrationTest / scalastyleConfig := (scalastyle / scalastyleConfig).value,
+    IntegrationTest / scalastyleTarget := target.value / "scalastyle-it-results.xml",
+    IntegrationTest / scalastyleFailOnError := (scalastyleFailOnError in scalastyle).value,
+    (IntegrationTest / scalastyleFailOnWarning) := (scalastyleFailOnWarning in scalastyle).value,
+    IntegrationTest / scalastyleSources := (unmanagedSourceDirectories in IntegrationTest).value,
+    codeStyleIntegrationTest := (IntegrationTest / scalastyle).toTask("").value,
+    (IntegrationTest / test) := ((IntegrationTest / test) dependsOn codeStyleIntegrationTest).value
   )
