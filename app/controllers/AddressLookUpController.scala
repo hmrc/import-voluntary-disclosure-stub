@@ -24,16 +24,15 @@ import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 import scala.concurrent.Future
 
 @Singleton
-class AddressLookUpController @Inject()(cc: ControllerComponents,
-                                        appConfig: AppConfig)
-  extends BackendController(cc) {
+class AddressLookUpController @Inject() (cc: ControllerComponents, appConfig: AppConfig) extends BackendController(cc) {
 
-  def initialise() : Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Accepted.withHeaders(("Location", s"${appConfig.ivdFrontendContextUrl}/importer-address-callback?id=12345")))
+  def initialise(): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(
+      Accepted.withHeaders(("Location", s"${appConfig.ivdFrontendContextUrl}/importer-address-callback?id=12345"))
+    )
   }
 
   def getAddress(id: Option[String]): Action[AnyContent] = Action.async { implicit request =>
-
     val successBody =
       s"""{
          |"address": {

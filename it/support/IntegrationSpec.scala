@@ -45,8 +45,8 @@ trait IntegrationSpec
   private val servicesPath = "microservice.services"
 
   def overriddenConfig: Map[String, Any] = Map(
-    s"$servicesPath.auth.host" -> mockHost,
-    s"$servicesPath.auth.port" -> mockPort,
+    s"$servicesPath.auth.host"       -> mockHost,
+    s"$servicesPath.auth.port"       -> mockPort,
     "auditing.consumer.baseUri.port" -> mockPort
   )
 
@@ -65,7 +65,8 @@ trait IntegrationSpec
     super.afterAll()
   }
 
-  def buildRequest(path: String): WSRequest = client.url(s"http://localhost:$port/import-voluntary-disclosure-stub$path").withFollowRedirects(false)
+  def buildRequest(path: String): WSRequest =
+    client.url(s"http://localhost:$port/import-voluntary-disclosure-stub$path").withFollowRedirects(false)
 
   def document(response: WSResponse): JsValue = Json.parse(response.body)
 }

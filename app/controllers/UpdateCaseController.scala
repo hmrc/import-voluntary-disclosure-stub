@@ -27,14 +27,12 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton()
-class UpdateCaseController @Inject()(cc: ControllerComponents)
-  extends BackendController(cc) with Logging {
+class UpdateCaseController @Inject() (cc: ControllerComponents) extends BackendController(cc) with Logging {
 
   private[controllers] val InvalidCaseId = "C189999999999999999999"
-  private[controllers] val ClosedCaseId = "C188888888888888888888"
+  private[controllers] val ClosedCaseId  = "C188888888888888888888"
 
   def updateCase(): Action[JsValue] = Action(parse.json).async { request =>
-
     val requiredHeaders = Set(
       "customprocesseshost",
       "x-correlation-id",
@@ -53,7 +51,9 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
 
     val result = for {
       _ <- Either.cond(missingHeaders.isEmpty, (), Json.obj("missing-headers" -> missingHeaders.toList))
-      caseId <- (request.body \ "Content" \ "CaseID").validate[String].asEither.left.map(err => Json.obj("errors" -> err.toString()))
+      caseId <- (request.body \ "Content" \ "CaseID").validate[String].asEither.left.map(err =>
+        Json.obj("errors" -> err.toString())
+      )
     } yield caseId
 
     val resp = result match {
@@ -62,15 +62,16 @@ class UpdateCaseController @Inject()(cc: ControllerComponents)
         BadRequest(Json.obj("errorDetail" -> error))
 
       case Right(`ClosedCaseId`) =>
-        val error = Json.obj("correlationId" -> correlationId, "errorMessage" -> "9xx : 04 - Requested case already closed")
+        val error =
+          Json.obj("correlationId" -> correlationId, "errorMessage" -> "9xx : 04 - Requested case already closed")
         BadRequest(Json.obj("errorDetail" -> error))
 
       case Right(caseId) =>
         val successBody = Json.obj(
-          "CaseID" -> caseId,
+          "CaseID"         -> caseId,
           "ProcessingDate" -> Instant.now().toString,
-          "Status" -> "Success",
-          "StatusText" -> "Case updated successfully"
+          "Status"         -> "Success",
+          "StatusText"     -> "Case updated successfully"
         )
 
         Ok(successBody)

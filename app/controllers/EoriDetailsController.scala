@@ -24,30 +24,40 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton()
-class EoriDetailsController @Inject()(cc: ControllerComponents)
-  extends BackendController(cc) {
+class EoriDetailsController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
 
-  def onLoad(regime: String, acknowledgementReference: String, EORI: String): Action[AnyContent] = Action.async { implicit request =>
-    EORI match {
-      case eori if EORI == "GB200000000001" =>
-        Future.successful(Ok(Json.obj(
-          "subscriptionDisplayResponse" -> Json.obj(
-             "responseCommon" -> responseCommonError
-          ))))
-      case eori if EORI == "GB404000000001" =>
-        Future.successful(NotFound("taxPayerID or EORI exists but no detail returned"))
-      case _ =>
-        Future.successful(Ok(Json.obj(
-          "subscriptionDisplayResponse" -> Json.obj(
-            "responseCommon" -> responseCommon,
-            "responseDetail" -> responseDetail(EORI)
-        ))))
-    }
+  def onLoad(regime: String, acknowledgementReference: String, EORI: String): Action[AnyContent] = Action.async {
+    implicit request =>
+      EORI match {
+        case eori if EORI == "GB200000000001" =>
+          Future.successful(
+            Ok(
+              Json.obj(
+                "subscriptionDisplayResponse" -> Json.obj(
+                  "responseCommon" -> responseCommonError
+                )
+              )
+            )
+          )
+        case eori if EORI == "GB404000000001" =>
+          Future.successful(NotFound("taxPayerID or EORI exists but no detail returned"))
+        case _ =>
+          Future.successful(
+            Ok(
+              Json.obj(
+                "subscriptionDisplayResponse" -> Json.obj(
+                  "responseCommon" -> responseCommon,
+                  "responseDetail" -> responseDetail(EORI)
+                )
+              )
+            )
+          )
+      }
   }
 
   private final val responseCommon = Json.obj(
     fields = "status" -> "OK",
-    "statusText" -> "Optional status text from ETMP",
+    "statusText"     -> "Optional status text from ETMP",
     "processingDate" -> "2021-03-1T19:33:47Z",
     "returnParameters" -> Json.arr(
       Json.obj("paramName" -> "POSITION", "paramValue" -> "LINK")
@@ -59,21 +69,21 @@ class EoriDetailsController @Inject()(cc: ControllerComponents)
     "CDSFullName" -> "Fast Food ltd",
     "CDSEstablishmentAddress" -> Json.obj(
       "streetAndNumber" -> "99 Avenue Road",
-      "city" -> "Anyold Town",
-      "postalCode" -> "99JZ 1AA",
-      "countryCode" -> "GB"
+      "city"            -> "Anyold Town",
+      "postalCode"      -> "99JZ 1AA",
+      "countryCode"     -> "GB"
     ),
     "VATIDs" -> Json.arr(
       Json.obj(
         "countryCode" -> "GB",
-      "VATID" -> EORI.substring(2)
+        "VATID"       -> EORI.substring(2)
       )
     )
   )
 
   private final val responseCommonError = Json.obj(
     fields = "status" -> "OK",
-    "statusText" -> "037 - Mandatory parameters missing or invalid",
+    "statusText"     -> "037 - Mandatory parameters missing or invalid",
     "processingDate" -> "2021-03-1T19:33:47Z",
     "returnParameters" -> Json.arr(
       Json.obj("paramName" -> "POSITION", "paramValue" -> "FAIL")
