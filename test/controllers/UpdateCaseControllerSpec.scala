@@ -31,8 +31,9 @@ import java.util.{Locale, UUID}
 
 class UpdateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
-  private val httpDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH).withZone(ZoneId.of("GMT"))
-  private val request = FakeRequest(controllers.routes.UpdateCaseController.updateCase()).withBody(Json.obj())
+  private val httpDateFormatter =
+    DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH).withZone(ZoneId.of("GMT"))
+  private val request    = FakeRequest(controllers.routes.UpdateCaseController.updateCase()).withBody(Json.obj())
   private val controller = new UpdateCaseController(stubControllerComponents())
 
   trait Test {
@@ -40,11 +41,11 @@ class UpdateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
 
     def validRequest: FakeRequest[JsObject] = request.withHeaders(
       "customprocesseshost" -> "Digital",
-      "x-correlation-id" -> UUID.randomUUID().toString,
-      "date" -> LocalDateTime.now().format(httpDateFormatter),
-      "content-type" -> ContentTypes.JSON,
-      "accept" -> ContentTypes.JSON,
-      "authorization" -> s"Bearer some-really-long-token"
+      "x-correlation-id"    -> UUID.randomUUID().toString,
+      "date"                -> LocalDateTime.now().format(httpDateFormatter),
+      "content-type"        -> ContentTypes.JSON,
+      "accept"              -> ContentTypes.JSON,
+      "authorization"       -> s"Bearer some-really-long-token"
     ).withBody(Json.obj("Content" -> Json.obj("CaseID" -> caseId)))
   }
 
@@ -68,13 +69,13 @@ class UpdateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
 
     "return 400 for a case that doesn't exist" in new Test {
       override val caseId: String = controller.InvalidCaseId
-      private val result = controller.updateCase()(validRequest)
+      private val result          = controller.updateCase()(validRequest)
       status(result) shouldBe Status.BAD_REQUEST
     }
 
     "return 400 for a case that's closed" in new Test {
       override val caseId: String = controller.ClosedCaseId
-      private val result = controller.updateCase()(validRequest)
+      private val result          = controller.updateCase()(validRequest)
       status(result) shouldBe Status.BAD_REQUEST
     }
   }

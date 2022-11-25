@@ -34,14 +34,16 @@ class EoriDetailsControllerSpec extends AnyWordSpec with Matchers with GuiceOneA
       val result = controller.onLoad(
         regime = "CDS",
         acknowledgementReference = "11a2b17559e64b14be257a112a7d9e8e",
-        EORI = "GB123456789")(fakeRequest)
+        EORI = "GB123456789"
+      )(fakeRequest)
       status(result) shouldBe Status.OK
     }
     "return 200 without response details" in {
       val result = controller.onLoad(
         regime = "CDS",
         acknowledgementReference = "11a2b17559e64b14be257a112a7d9e8e",
-        EORI = "GB200000000001")(fakeRequest)
+        EORI = "GB200000000001"
+      )(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsString(result).contains("responseDetail") shouldBe false
     }
@@ -49,7 +51,8 @@ class EoriDetailsControllerSpec extends AnyWordSpec with Matchers with GuiceOneA
       val result = controller.onLoad(
         regime = "CDS",
         acknowledgementReference = "11a2b17559e64b14be257a112a7d9e8e",
-        EORI = "GB404000000001")(fakeRequest)
+        EORI = "GB404000000001"
+      )(fakeRequest)
       status(result) shouldBe Status.NOT_FOUND
     }
   }

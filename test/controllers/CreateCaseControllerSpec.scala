@@ -30,7 +30,8 @@ import java.util.{Locale, UUID}
 
 class CreateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite {
 
-  private val httpDateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH).withZone(ZoneId.of("GMT"))
+  private val httpDateFormatter =
+    DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH).withZone(ZoneId.of("GMT"))
 
   private val request = FakeRequest(controllers.routes.CreateCaseController.createCase())
 
@@ -40,11 +41,11 @@ class CreateCaseControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
 
     val validRequest = request.withHeaders(
       "customprocesseshost" -> "Digital",
-      "x-correlation-id" -> UUID.randomUUID().toString,
-      "date" -> LocalDateTime.now().format(httpDateFormatter),
-      "content-type" -> ContentTypes.JSON,
-      "accept" -> ContentTypes.JSON,
-      "authorization" -> s"Bearer some-really-long-token"
+      "x-correlation-id"    -> UUID.randomUUID().toString,
+      "date"                -> LocalDateTime.now().format(httpDateFormatter),
+      "content-type"        -> ContentTypes.JSON,
+      "accept"              -> ContentTypes.JSON,
+      "authorization"       -> s"Bearer some-really-long-token"
     )
 
     "return 200" in {

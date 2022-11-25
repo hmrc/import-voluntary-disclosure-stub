@@ -27,11 +27,9 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton()
-class CreateCaseController @Inject()(cc: ControllerComponents)
-  extends BackendController(cc) with Logging {
+class CreateCaseController @Inject() (cc: ControllerComponents) extends BackendController(cc) with Logging {
 
   def createCase(): Action[AnyContent] = Action.async { request =>
-
     val requiredHeaders = Set(
       "customprocesseshost",
       "x-correlation-id",
@@ -50,10 +48,10 @@ class CreateCaseController @Inject()(cc: ControllerComponents)
     val response = if (missingHeaders.isEmpty) {
 
       val successBody = Json.obj(
-        "CaseID" -> "C18-101",
+        "CaseID"         -> "C18-101",
         "ProcessingDate" -> Instant.now().toString,
-        "Status" -> "Success",
-        "StatusText" -> "Case created successfully"
+        "Status"         -> "Success",
+        "StatusText"     -> "Case created successfully"
       )
 
       Ok(successBody)

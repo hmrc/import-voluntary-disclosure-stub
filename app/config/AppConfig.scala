@@ -22,11 +22,11 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AppConfig @Inject()(config: Configuration, servicesConfig: ServicesConfig) {
+class AppConfig @Inject() (config: Configuration, servicesConfig: ServicesConfig) {
 
   val authBaseUrl: String = servicesConfig.baseUrl("auth")
 
   val ivdFrontendContextUrl: String = config.get[String]("ivdFrontendContextUrl")
-  val auditingEnabled: Boolean = config.get[Boolean]("auditing.enabled")
-  val graphiteHost: String     = config.get[String]("microservice.metrics.graphite.host")
+  val auditingEnabled: Boolean      = config.get[Boolean]("auditing.enabled")
+  val graphiteHost: String          = config.get[String]("microservice.metrics.graphite.host")
 }
