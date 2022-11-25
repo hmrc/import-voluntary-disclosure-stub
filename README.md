@@ -35,7 +35,7 @@ This repository uses [Scalafmt](https://scalameta.org/scalafmt/), a code formatt
 To apply formatting to this repository using the configured rules in [.scalafmt.conf](.scalafmt.conf) execute:
 
  ```
- sbt scalafmtSbt
+ sbt scalafmtAll
  ```
 
 To check files have been formatted as expected execute:
