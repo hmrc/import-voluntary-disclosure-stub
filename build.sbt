@@ -3,23 +3,18 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "import-voluntary-disclosure-stub"
 
-val silencerVersion = "1.7.9"
-
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
     majorVersion             := 0,
-    scalaVersion             := "2.12.16",
+    scalaVersion             := "2.13.9",
     PlayKeys.playDefaultPort := 7952,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    // ***************
-    // Use the silencer plugin to suppress warnings
-    scalacOptions += "-P:silencer:pathFilters=routes",
-    libraryDependencies ++= Seq(
-      compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
-      "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
-    )
-    // ***************
+    scalacOptions += "-Wconf:src=routes/.*:s"
+  )
+  .settings(
+    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
+    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always)
   )
   .settings(publishingSettings: _*)
   .configs(IntegrationTest)
@@ -32,9 +27,9 @@ Project.inConfig(IntegrationTest)(ScalastylePlugin.rawScalastyleSettings()) ++
   Seq(
     IntegrationTest / scalastyleConfig          := (scalastyle / scalastyleConfig).value,
     IntegrationTest / scalastyleTarget          := target.value / "scalastyle-it-results.xml",
-    IntegrationTest / scalastyleFailOnError     := (scalastyleFailOnError in scalastyle).value,
-    (IntegrationTest / scalastyleFailOnWarning) := (scalastyleFailOnWarning in scalastyle).value,
-    IntegrationTest / scalastyleSources         := (unmanagedSourceDirectories in IntegrationTest).value,
+    IntegrationTest / scalastyleFailOnError     := (scalastyle / scalastyleFailOnError).value,
+    (IntegrationTest / scalastyleFailOnWarning) := (scalastyle / scalastyleFailOnWarning).value,
+    IntegrationTest / scalastyleSources         := (IntegrationTest / unmanagedSourceDirectories).value,
     codeStyleIntegrationTest                    := (IntegrationTest / scalastyle).toTask("").value,
     (IntegrationTest / test)                    := ((IntegrationTest / test) dependsOn codeStyleIntegrationTest).value
   )
