@@ -6,7 +6,7 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
     majorVersion             := 0,
-    scalaVersion             := "2.13.9",
+    scalaVersion             := "2.13.12",
     PlayKeys.playDefaultPort := 7952,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     scalacOptions += "-Wconf:src=routes/.*:s"
