@@ -1,35 +1,24 @@
-import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.DefaultBuildSettings
 
 val appName = "import-voluntary-disclosure-stub"
+
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
   .settings(
-    majorVersion             := 0,
-    scalaVersion             := "2.13.9",
     PlayKeys.playDefaultPort := 7952,
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     scalacOptions += "-Wconf:src=routes/.*:s"
   )
-  .settings(
-    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
-    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always)
-  )
-  .settings(publishingSettings: _*)
-  .configs(IntegrationTest)
-  .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
-  .settings(CodeCoverageSettings.settings: _*)
+  .settings(CodeCoverageSettings.settings *)
 
-val codeStyleIntegrationTest = taskKey[Unit]("enforce code style then integration test")
-Project.inConfig(IntegrationTest)(ScalastylePlugin.rawScalastyleSettings()) ++
-  Seq(
-    IntegrationTest / scalastyleConfig          := (scalastyle / scalastyleConfig).value,
-    IntegrationTest / scalastyleTarget          := target.value / "scalastyle-it-results.xml",
-    IntegrationTest / scalastyleFailOnError     := (scalastyle / scalastyleFailOnError).value,
-    (IntegrationTest / scalastyleFailOnWarning) := (scalastyle / scalastyleFailOnWarning).value,
-    IntegrationTest / scalastyleSources         := (IntegrationTest / unmanagedSourceDirectories).value,
-    codeStyleIntegrationTest                    := (IntegrationTest / scalastyle).toTask("").value,
-    (IntegrationTest / test)                    := ((IntegrationTest / test) dependsOn codeStyleIntegrationTest).value
-  )
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(
+    microservice % "test->test"
+  ) // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings())
+  .settings(libraryDependencies ++= AppDependencies.test)

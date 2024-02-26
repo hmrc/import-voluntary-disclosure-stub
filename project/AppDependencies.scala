@@ -3,19 +3,20 @@ import sbt._
 
 object AppDependencies {
 
-  val compile = Seq(
-    "uk.gov.hmrc"                  %% "bootstrap-backend-play-28" % "7.2.0",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.13.0"
+  val bootstrapVersion = "8.4.0"
+  val playVersion      = 30
+
+  val compile: Seq[ModuleID] = Seq(
+    "uk.gov.hmrc"                  %% s"bootstrap-backend-play-$playVersion" % bootstrapVersion,
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"                 % "2.16.1"
   )
 
-  val test = Seq(
-    "org.scalamock"          %% "scalamock"              % "5.2.0"  % Test,
-    "com.github.tomakehurst"  % "wiremock-jre8"          % "2.33.2" % "test, it",
-    "uk.gov.hmrc"            %% "bootstrap-test-play-28" % "7.2.0"  % Test,
-    "org.scalatest"          %% "scalatest"              % "3.2.13" % "test, it",
-    "com.typesafe.play"      %% "play-test"              % current  % Test,
-    "com.vladsch.flexmark"    % "flexmark-all"           % "0.62.2" % "test, it",
-    "org.scalatestplus.play" %% "scalatestplus-play"     % "5.1.0"  % "test, it"
-  )
+  val test: Seq[ModuleID] = Seq(
+    "uk.gov.hmrc"            %% s"bootstrap-test-play-$playVersion" % bootstrapVersion,
+    "org.scalamock"          %% "scalamock"                         % "5.2.0",
+    "org.scalatest"          %% "scalatest"                         % "3.2.17",
+    "com.vladsch.flexmark"    % "flexmark-all"                      % "0.64.8",
+    "org.scalatestplus.play" %% "scalatestplus-play"                % "7.0.1"
+  ).map(_ % Test)
 
 }
