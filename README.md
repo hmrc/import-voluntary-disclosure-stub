@@ -1,4 +1,3 @@
-
 # import-voluntary-disclosure-stub
 
 ## Purpose
@@ -6,7 +5,7 @@ This stub is for local development and staging support. It provides endpoints to
 
 ## Running the service
 ### Service manager
-`sm --start IMPORT_VOLUNTARY_DISCLOSURE_STUB -r`
+`sm2 --start IMPORT_VOLUNTARY_DISCLOSURE_STUB`
 ### Locally
 `sbt run` or `sbt 'run 7952'`
 
