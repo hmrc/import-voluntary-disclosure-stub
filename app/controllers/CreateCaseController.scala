@@ -62,7 +62,7 @@ class CreateCaseController @Inject() (cc: ControllerComponents) extends BackendC
       BadRequest(errorBody)
     }
 
-    Future.successful(response.withHeaders(responseHeaders: _*))
+    Future.successful(response.withHeaders(responseHeaders*))
   }
 
 }

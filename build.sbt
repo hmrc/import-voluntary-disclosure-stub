@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings
 val appName = "import-voluntary-disclosure-stub"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "3.3.6"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala,SbtDistributablesPlugin)

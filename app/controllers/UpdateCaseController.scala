@@ -42,7 +42,7 @@ class UpdateCaseController @Inject() (cc: ControllerComponents) extends BackendC
       "authorization"
     )
 
-    val correlationId = request.headers.get("x-correlation-id").getOrElse(UUID.randomUUID().toString)
+    val correlationId   = request.headers.get("x-correlation-id").getOrElse(UUID.randomUUID().toString)
     val responseHeaders = Seq(
       "x-correlation-id" -> correlationId
     )
@@ -50,7 +50,7 @@ class UpdateCaseController @Inject() (cc: ControllerComponents) extends BackendC
     val missingHeaders = requiredHeaders.diff(request.headers.keys.map(_.toLowerCase))
 
     val result = for {
-      _ <- Either.cond(missingHeaders.isEmpty, (), Json.obj("missing-headers" -> missingHeaders.toList))
+      _      <- Either.cond(missingHeaders.isEmpty, (), Json.obj("missing-headers" -> missingHeaders.toList))
       caseId <- (request.body \ "Content" \ "CaseID").validate[String].asEither.left.map(err =>
         Json.obj("errors" -> err.toString())
       )
@@ -82,7 +82,7 @@ class UpdateCaseController @Inject() (cc: ControllerComponents) extends BackendC
         BadRequest(error)
     }
 
-    Future.successful(resp.withHeaders(responseHeaders: _*))
+    Future.successful(resp.withHeaders(responseHeaders*))
   }
 
 }
