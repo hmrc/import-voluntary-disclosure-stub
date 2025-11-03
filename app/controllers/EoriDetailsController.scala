@@ -28,7 +28,7 @@ class EoriDetailsController @Inject() (cc: ControllerComponents) extends Backend
 
   def onLoad(regime: String, acknowledgementReference: String, EORI: String): Action[AnyContent] = Action.async {
     EORI match {
-      case eori if EORI == "GB200000000001" =>
+      case "GB200000000001" =>
         Future.successful(
           Ok(
             Json.obj(
@@ -38,7 +38,7 @@ class EoriDetailsController @Inject() (cc: ControllerComponents) extends Backend
             )
           )
         )
-      case eori if EORI == "GB404000000001" =>
+      case "GB404000000001" =>
         Future.successful(NotFound("taxPayerID or EORI exists but no detail returned"))
       case _ =>
         Future.successful(
@@ -56,8 +56,8 @@ class EoriDetailsController @Inject() (cc: ControllerComponents) extends Backend
 
   private final val responseCommon = Json.obj(
     fields = "status" -> "OK",
-    "statusText"     -> "Optional status text from ETMP",
-    "processingDate" -> "2021-03-1T19:33:47Z",
+    "statusText"       -> "Optional status text from ETMP",
+    "processingDate"   -> "2021-03-1T19:33:47Z",
     "returnParameters" -> Json.arr(
       Json.obj("paramName" -> "POSITION", "paramValue" -> "LINK")
     )
@@ -65,7 +65,7 @@ class EoriDetailsController @Inject() (cc: ControllerComponents) extends Backend
 
   private final def responseDetail(EORI: String) = Json.obj(
     fields = "EORINo" -> EORI,
-    "CDSFullName" -> "Fast Food ltd",
+    "CDSFullName"             -> "Fast Food ltd",
     "CDSEstablishmentAddress" -> Json.obj(
       "streetAndNumber" -> "99 Avenue Road",
       "city"            -> "Anyold Town",
@@ -82,8 +82,8 @@ class EoriDetailsController @Inject() (cc: ControllerComponents) extends Backend
 
   private final val responseCommonError = Json.obj(
     fields = "status" -> "OK",
-    "statusText"     -> "037 - Mandatory parameters missing or invalid",
-    "processingDate" -> "2021-03-1T19:33:47Z",
+    "statusText"       -> "037 - Mandatory parameters missing or invalid",
+    "processingDate"   -> "2021-03-1T19:33:47Z",
     "returnParameters" -> Json.arr(
       Json.obj("paramName" -> "POSITION", "paramValue" -> "FAIL")
     )
